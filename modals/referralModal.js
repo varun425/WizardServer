@@ -11,6 +11,10 @@ const referralSchema = new Schema({
         {
             txID: { type: String, required: true },
             poolID: { type: String, required: true },
+            slug: { type: String },
+            referralBy: { type: String },
+            referralTo: { type: String },
+            investedAmount: { type: String },
             transactAt: { type: Date, default: Date.now, required: true }
         }
     ],

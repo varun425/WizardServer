@@ -3,25 +3,39 @@ const refrealModal = require("../modals/referralModal");
 
 const Referral = async (req, res) => {
     try {
-        const { referalCode, transactionHash, poolID } = req.body;
+        const { referalCode, transactionHash, poolID, slug, investedAmount, referralTo } = req.body;
         const walletAddress = await decryptReferralCode.decryptReferralCode(referalCode);
         const existingReferral = await refrealModal.findOne({ walletAddress });
-        
+
         if (existingReferral) {
-            existingReferral.transactions.push({ txID: transactionHash, poolID: poolID });
+            existingReferral.transactions.push({
+                txID: transactionHash,
+                poolID: poolID,
+                slug: slug,
+                referralBy: walletAddress,
+                referralTo: referralTo,
+                investedAmount: investedAmount,
+            });
             const updatedReferral = await existingReferral.save();
-            console.log("API result for update", updatedReferral);
-            
+            console.log("API resut for update", updatedReferral);
+
             return {
                 code: 200,
                 message: 'Success - Saved referral data to existing record',
                 data: updatedReferral,
             };
         } else {
- 
+
             const obj = {
                 walletAddress,
-                transactions: [{ txID: transactionHash, poolID: poolID }]
+                transactions: [{
+                    txID: transactionHash,
+                    poolID: poolID,
+                    slug: slug,
+                    referralBy: walletAddress,
+                    referralTo: referralTo,
+                    investedAmount: investedAmount
+                }]
             };
 
             const result = await refrealModal.create(obj);
